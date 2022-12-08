@@ -20,14 +20,14 @@ class Product:
 
 _driver: WebDriver | None = None
 HEADERS = [field.name for field in fields(Product)]
-
+BASE_URL = "https://webscraper.io/test-sites/e-commerce/more/"
 URLS_FOR_PARSING = {
-    "home": "https://webscraper.io/test-sites/e-commerce/more",
-    "laptops": "https://webscraper.io/test-sites/e-commerce/more/computers/laptops",
-    "computers": "https://webscraper.io/test-sites/e-commerce/more/computers",
-    "tablets": "https://webscraper.io/test-sites/e-commerce/more/computers/tablets",
-    "phones": "https://webscraper.io/test-sites/e-commerce/more/phones",
-    "touch": "https://webscraper.io/test-sites/e-commerce/more/phones/touch",
+    "home": BASE_URL,
+    "computers": "computers",
+    "laptops": "computers/laptops",
+    "tablets": "computers/tablets",
+    "phones": "phones",
+    "touch": "phones/touch",
 }
 
 
@@ -89,7 +89,7 @@ def get_all_products() -> None:
         set_driver(new_driver)
 
         for category_name, url in URLS_FOR_PARSING.items():
-            get_driver().get(url)
+            get_driver().get(BASE_URL + url)
             accept_cookies()
             paginating()
 
