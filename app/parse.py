@@ -4,6 +4,7 @@ from dataclasses import dataclass, fields, astuple
 from time import sleep
 
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -48,21 +49,17 @@ def write_to_csv(path_to_csv: str, products: [Product]) -> None:
 
 
 def accept_cookies() -> None:
-    cookie = get_driver().find_elements(By.ID, "cookieBanner")
-    if len(cookie) == 0:
+    try:
+        get_driver().find_element(By.CLASS_NAME, "acceptCookies").click()
+    except NoSuchElementException:
+        pass
+
+
+def paginating() -> None:
+    try:
+        more_btn = get_driver().find_element(By.CLASS_NAME, "ecomerce-items-scroll-more")
+    except NoSuchElementException:
         return
-
-    is_hidden = "display: none" in cookie[0].get_attribute("style")
-    if not is_hidden:
-        cookie_btn = get_driver().find_element(By.CLASS_NAME, "acceptCookies")
-        cookie_btn.click()
-
-
-def over_more_pagination() -> None:
-    more_btn = get_driver().find_elements(By.CLASS_NAME, "ecomerce-items-scroll-more")
-    if len(more_btn) == 0:
-        return
-    more_btn = more_btn[0]
 
     while True:
         if more_btn.is_displayed():
@@ -95,7 +92,7 @@ def get_all_products() -> None:
         for category_name, url in URLS_FOR_PARSING.items():
             get_driver().get(url)
             accept_cookies()
-            over_more_pagination()
+            paginating()
 
             products = []
             for card in get_driver().find_elements(By.CLASS_NAME, "thumbnail"):
