@@ -20,7 +20,6 @@ class Product:
 
 _driver: WebDriver | None = None
 HEADERS = [field.name for field in fields(Product)]
-URL_BASE = "https://webscraper.io/"
 
 URLS_FOR_PARSING = {
     "home": "https://webscraper.io/test-sites/e-commerce/more",
